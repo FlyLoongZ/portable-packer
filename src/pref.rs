@@ -2,6 +2,7 @@ pub mod cmdline;
 pub mod config;
 pub mod config_toml;
 pub mod config_legacy;
+mod execute;
 
 #[derive(Debug)]
 pub enum OperationMode {
