@@ -7,12 +7,36 @@ mod execute;
 #[derive(Debug)]
 pub enum OperationMode {
 	Help,
-	CopyArch{
+	Copy {
+		source:		CopySource,
+		dest:		InstallDestination,
 		options:	RuntimeOptions,
 	},
-	PostOnlyArch{
+	PostOnly {
+		dest:		InstallDestination,
 		options:	RuntimeOptions,
 	},
+}
+
+/**
+	Source of which to copy from.
+*/
+#[derive(Debug)]
+pub enum CopySource {
+	/**
+		A local pacman package installed on the system
+	*/
+	PacmanLocal {
+		pkgname:	String,
+	},
+}
+
+/**
+	Destination distro to install, should default to Arch when unspecified
+*/
+#[derive(Debug)]
+pub enum InstallDestination {
+	ArchLinux,
 }
 
 /**
