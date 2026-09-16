@@ -36,7 +36,10 @@ pub enum CopySource {
 */
 #[derive(Debug)]
 pub enum InstallDestination {
-	ArchLinux,
+	ArchLinux {
+		pkgdir:		std::sync::Arc<std::path::PathBuf>,
+		pkgname:	std::sync::Arc<String>,
+	},
 }
 
 /**
