@@ -1,4 +1,4 @@
-pub trait PostInstall {
+pub trait PostInstall: Send {
 	/**
 		Overlay the contents in bin into app-private copy of OverlayFS.
 
