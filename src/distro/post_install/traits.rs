@@ -6,38 +6,38 @@ pub trait PostInstall {
 
 		The resulting String would be that binary name.
 	*/
-	async fn binary(&self, app_id: std::sync::Arc<String>, overlay: bool) -> Result<String, Self::PostError>;
+	fn binary(&self, app_id: std::sync::Arc<String>, overlay: bool) -> impl std::future::Future<Output = Result<String, Self::PostError>> + Send;
 
 	/**
 		Removes any .desktop file that is installed in the package root and autostart.
 
 		Installs the new one into package root.
 	*/
-	async fn desktop_file(
+	fn desktop_file(
 		&self,
 		app_id:		std::sync::Arc<String>,
 		desktop_file:	std::path::PathBuf,
-	) -> Result<(), Self::PostError>;
+	) -> impl std::future::Future<Output = Result<(), Self::PostError>> + Send;
 
 	/**
 		Removes any D-Bus service installed in package root.
 
 		Generates a new one and installs them if enabled.
 	*/
-	async fn dbus_service(
+	fn dbus_service(
 		&self,
 		app_id:		std::sync::Arc<String>,
 		generate:	bool,
-	) -> Result<(), Self::PostError>;
+	) -> impl std::future::Future<Output = Result<(), Self::PostError>> + Send;
 
 	/**
 		Removes any GNOME Shell Extensions, Modes installed in the system.
 
 		Search Provider is not preserved, with sandbox_id.ini being the name.
 	*/
-	async fn gnome_shell(
+	fn gnome_shell(
 		&self,
-	) -> Result<(), Self::PostError>;
+	) -> impl std::future::Future<Output = Result<(), Self::PostError>> + Send;
 
 	type PostError: std::fmt::Debug;
 }
