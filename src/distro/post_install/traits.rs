@@ -39,7 +39,6 @@ pub trait PostInstall {
 		&self,
 	) -> Result<(), Self::PostError>;
 
-
-	type PostError;
+	type PostError: std::fmt::Debug;
 }
 
