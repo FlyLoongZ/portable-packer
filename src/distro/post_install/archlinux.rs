@@ -2,8 +2,8 @@
 	This struct implements post install function for Arch Linux
 */
 pub struct ArchPost {
-	pkgdir:		std::sync::Arc<std::path::PathBuf>,
-	pkgname:	std::sync::Arc<String>,
+	pub pkgdir:	std::sync::Arc<std::path::PathBuf>,
+	pub pkgname:	std::sync::Arc<String>,
 }
 
 impl Default for ArchPost {
