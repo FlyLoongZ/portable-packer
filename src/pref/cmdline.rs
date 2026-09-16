@@ -35,7 +35,16 @@ impl Into<super::InstallDestination> for Distro {
 	fn into(self) -> super::InstallDestination {
 		match self {
 			Self::Arch	=> {
-				super::InstallDestination::ArchLinux
+				super::InstallDestination::ArchLinux {
+					pkgdir:		std::path::PathBuf::from(
+						std::env::var("pkgdir")
+							.expect("Expected a $pkgdir variable")
+						)
+						.into(),
+					pkgname:	std::env::var("pkgname")
+						.expect("Expected a $pkgname variable")
+						.into(),
+				}
 			}
 		}
 	}
