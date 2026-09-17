@@ -112,4 +112,11 @@ async fn post_install (object: impl crate::distro::post_install::traits::PostIns
 	object.gnome_shell()
 		.await
 		.expect("Could not install or remove GNOME Shell service");
+
+	object.portable_config(
+		options.config_path,
+		sandbox_id,
+	)
+		.await
+		.expect("Could not install or remove GNOME Shell service");
 }
