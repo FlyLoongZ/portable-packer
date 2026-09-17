@@ -34,6 +34,11 @@ pub async fn get(pkgname: &str) -> Result<Vec<std::path::PathBuf>, super::ArchEr
 	let mut paths = vec![];
 
 	{
+		/*
+			pacman always strip the leading slash from paths, so we need to join it
+			to prevent tokio using relative path
+		*/
+		let root_path = std::path::PathBuf::from("/");
 		for line in content.split("\n") {
 			let line = line.trim();
 
@@ -44,7 +49,7 @@ pub async fn get(pkgname: &str) -> Result<Vec<std::path::PathBuf>, super::ArchEr
 			};
 
 			paths.push(
-				std::path::PathBuf::from(line)
+				root_path.join(std::path::PathBuf::from(line))
 			);
 		}
 	};
