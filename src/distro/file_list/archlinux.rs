@@ -48,7 +48,7 @@ impl crate::distro::file_list::GetFileList for Arch {
 			Ok(v)	=> {
 				std::path::PathBuf::from(v)
 			}
-			Err(e)	=> {
+			Err(_)	=> {
 				return Err(ArchError::MissingPkgdir);
 			}
 		};
