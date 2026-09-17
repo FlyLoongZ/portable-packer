@@ -60,6 +60,48 @@ impl super::traits::PostInstall for ArchPost {
 		).await
 	}
 
+	async fn portable_config(
+			&self,
+			config_fs:	crate::pref::PortableConfig,
+			app_id:		std::sync::Arc<String>,
+		) -> Result<(), Self::PostError>
+	{
+		let mut config_dir = {
+			let mut path = self.pkgdir.to_path_buf();
+			path.push("usr");
+			path.push("lib");
+			path.push("portable");
+			path.push("info");
+			path.push(app_id.as_str());
+			path
+		};
+
+		tokio::fs::create_dir_all(&config_dir)
+			.await
+			.map_err(ArchError::ConfigIOError)
+			?;
+
+		let file_path = match &config_fs {
+			crate::pref::PortableConfig::Modern(_v)	=> {
+				config_dir.push("config.toml");
+				config_dir
+			}
+			crate::pref::PortableConfig::Legacy(_v)	=> {
+				config_dir.push("config");
+				config_dir
+			}
+		};
+
+		tokio::fs::copy(
+			config_fs,
+			file_path,
+		)
+			.await
+			.map_err(ArchError::ConfigIOError)
+			?;
+		Ok(())
+	}
+
 	type PostError = ArchError;
 }
 
@@ -71,23 +113,26 @@ pub enum ArchError {
 	#[error("I/O error installing .desktop file: {0:#?}")]
 	DesktopFileInstallIOError(std::io::Error),
 
-	#[error("I/O error installing app-private overlay")]
+	#[error("I/O error installing app-private overlay: {0:#?}")]
 	OverlayInstallIOError(std::io::Error),
 
-	#[error("I/O error removing binaries")]
+	#[error("I/O error removing binaries: {0:#?}")]
 	BinaryRemoveIOError(std::io::Error),
 
-	#[error("I/O error creating stub binaries")]
+	#[error("I/O error creating stub binaries: {0:#?}")]
 	BinaryInstallIOError(std::io::Error),
 
-	#[error("I/O error removing D-Bus services")]
+	#[error("I/O error removing D-Bus services: {0:#?}")]
 	BusRmIOError(std::io::Error),
 
-	#[error("I/O error installing D-Bus services")]
+	#[error("I/O error installing D-Bus services: {0:#?}")]
 	BusInstallIOError(std::io::Error),
 
-	#[error("I/O error cleaning GNOME Shell paths")]
+	#[error("I/O error cleaning GNOME Shell paths: {0:#?}")]
 	GNOMEShellIOError(std::io::Error),
+
+	#[error("I/O error installing config: {0:#?}")]
+	ConfigIOError(std::io::Error),
 }
 
 async fn binary(

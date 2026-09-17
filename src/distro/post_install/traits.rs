@@ -39,6 +39,15 @@ pub trait PostInstall: Send {
 		&self,
 	) -> impl std::future::Future<Output = Result<(), Self::PostError>> + Send;
 
+	/**
+		Install a Portable config
+	*/
+	fn portable_config(
+		&self,
+		config_fs:	crate::pref::PortableConfig,
+		app_id:		std::sync::Arc<String>,
+	) -> impl std::future::Future<Output = Result<(), Self::PostError>> + Send;
+
 	type PostError: std::fmt::Debug;
 }
 
