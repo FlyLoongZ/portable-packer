@@ -169,6 +169,7 @@ async fn binary(
 		.read(false)
 		.write(true)
 		.create_new(true)
+		.mode(0o755)
 		.open(binary_path)
 		.await
 		.map_err(ArchError::BinaryInstallIOError)
