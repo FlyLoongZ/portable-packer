@@ -42,7 +42,7 @@ impl super::OperationMode {
 						workers.push(
 							tokio::spawn(
 								file
-									.copy(pkgdir.to_path_buf())
+									.copy(pkgdir.clone())
 							)
 						);
 					};
