@@ -49,7 +49,11 @@ impl PackageFile {
 	pub async fn copy(self, pkgdir: std::sync::Arc<std::path::PathBuf>) -> Result<(), std::io::Error> {
 		match self {
 			Self::Regular { source_path }	=> {
-				let install_path = pkgdir.join(&source_path);
+				let install_path = {
+					let mut path = pkgdir.to_path_buf();
+					path.extend(source_path.iter());
+					path
+				};
 
 				println!("Installing {source_path:?} to {install_path:?}");
 				tokio::fs::copy(
@@ -61,7 +65,11 @@ impl PackageFile {
 				Ok(())
 			}
 			Self::Symlink { source_path, link_target }	=> {
-				let install_path = pkgdir.join(source_path);
+				let install_path = {
+					let mut path = pkgdir.to_path_buf();
+					path.extend(source_path.iter());
+					path
+				};
 
 				println!("Linking {install_path:?} to {link_target:?}");
 				tokio::fs::symlink(
