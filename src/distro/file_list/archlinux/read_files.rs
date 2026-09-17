@@ -6,7 +6,7 @@ pub async fn get(pkgname: &str) -> Result<Vec<std::path::PathBuf>, super::ArchEr
 
 	let files_path = {
 		let mut path = package_root.to_path_buf();
-		path.push("desc");
+		path.push("files");
 		path
 	};
 
@@ -38,6 +38,8 @@ pub async fn get(pkgname: &str) -> Result<Vec<std::path::PathBuf>, super::ArchEr
 			let line = line.trim();
 
 			if line.is_empty() {
+				continue;
+			} else if line == "%FILES%" {
 				continue;
 			};
 
