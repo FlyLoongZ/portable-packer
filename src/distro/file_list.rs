@@ -46,7 +46,7 @@ impl PackageFile {
 	/**
 		Install the file or symbolic link into the package directory
 	*/
-	pub async fn copy(self, pkgdir: std::path::PathBuf) -> Result<(), std::io::Error> {
+	pub async fn copy(self, pkgdir: std::sync::Arc<std::path::PathBuf>) -> Result<(), std::io::Error> {
 		match self {
 			Self::Regular { source_path }	=> {
 				let install_path = pkgdir.join(&source_path);
