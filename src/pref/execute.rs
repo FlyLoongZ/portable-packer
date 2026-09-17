@@ -31,7 +31,8 @@ impl super::OperationMode {
 					for file in file_list {
 						workers.push(
 							tokio::spawn(
-								file.copy()
+								file
+									.copy()
 							)
 						);
 					};

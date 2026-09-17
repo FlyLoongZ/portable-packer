@@ -18,6 +18,7 @@ pub trait GetFileList {
 
 	It describes several key information to implement the "copy" action.
 */
+#[derive(Debug)]
 pub enum PackageFile {
 	Regular {
 		/**
@@ -55,6 +56,7 @@ impl PackageFile {
 	pub async fn copy(self) -> Result<(), std::io::Error> {
 		match self {
 			Self::Regular { source_path, dest_path }	=> {
+				println!("Installing {source_path:?} to {dest_path:?}");
 				tokio::fs::copy(
 					source_path,
 					dest_path,
@@ -64,6 +66,7 @@ impl PackageFile {
 				Ok(())
 			}
 			Self::Symlink { dest_path, link_target }	=> {
+				println!("Linking {link_target:?} to {dest_path:?}");
 				tokio::fs::symlink(
 					link_target,
 					dest_path,
