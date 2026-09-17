@@ -51,6 +51,18 @@ impl PackageFile {
 			Self::Regular { source_path }	=> {
 				let install_path = {
 					let mut path = pkgdir.to_path_buf();
+
+					for element in source_path.components() {
+						match element {
+							std::path::Component::RootDir	=> {
+								continue;
+							}
+							component			=> {
+								path.push(component);
+							}
+						}
+					};
+
 					path.extend(source_path.iter());
 					path
 				};
@@ -67,6 +79,18 @@ impl PackageFile {
 			Self::Symlink { source_path, link_target }	=> {
 				let install_path = {
 					let mut path = pkgdir.to_path_buf();
+
+					for element in source_path.components() {
+						match element {
+							std::path::Component::RootDir	=> {
+								continue;
+							}
+							component			=> {
+								path.push(component);
+							}
+						}
+					};
+
 					path.extend(source_path.iter());
 					path
 				};
