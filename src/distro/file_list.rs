@@ -63,7 +63,6 @@ impl PackageFile {
 						}
 					};
 
-					path.extend(source_path.iter());
 					path
 				};
 
@@ -91,7 +90,6 @@ impl PackageFile {
 						}
 					};
 
-					path.extend(source_path.iter());
 					path
 				};
 
