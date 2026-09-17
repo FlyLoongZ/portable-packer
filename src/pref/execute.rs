@@ -31,15 +31,8 @@ impl super::OperationMode {
 					for file in file_list {
 						workers.push(
 							tokio::spawn(
-								async {
-									file
-										.copy()
-										.await
-										.expect(
-											format!("While copying {file:#?}, an error occured")
-												.as_str()
-										)
-								}
+								file
+									.copy()
 							)
 						);
 					};
@@ -51,6 +44,7 @@ impl super::OperationMode {
 					worker
 						.await
 						.expect("Could not spawn copy task")
+						.expect("Could not copy from source")
 				};
 
 				let (post_object, options) = match dest {
