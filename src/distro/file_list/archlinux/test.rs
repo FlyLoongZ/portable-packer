@@ -1,14 +1,14 @@
 /**
-	Test the portable-packer package for file list extraction
+	Test the portable package for file list extraction
 */
 #[tokio::test]
-pub async fn test_package_packer() {
+pub async fn test_package() {
 	unsafe {
 		std::env::set_var("pkgdir", "/package_root")
 	};
 
 
-	let list = super::read_files::get("portable-packer").await.unwrap();
+	let list = super::read_files::get("portable").await.unwrap();
 
 	if list.len() == 0 {
 		panic!("Empty file list!")
