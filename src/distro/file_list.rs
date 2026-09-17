@@ -18,6 +18,7 @@ pub trait GetFileList {
 
 	It describes several key information to implement the "copy" action.
 */
+#[derive(Debug)]
 pub enum PackageFile {
 	Regular {
 		/**
