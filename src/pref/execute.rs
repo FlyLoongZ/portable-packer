@@ -25,6 +25,16 @@ impl super::OperationMode {
 					}
 				};
 
+				let (pkgdir, pkgname ) = match dest {
+					crate::pref::InstallDestination::ArchLinux { pkgdir, pkgname }
+						=> {
+							(
+								pkgdir,
+								pkgname,
+							)
+						}
+				};
+
 				let workers = {
 					let mut workers = vec![];
 
@@ -32,7 +42,7 @@ impl super::OperationMode {
 						workers.push(
 							tokio::spawn(
 								file
-									.copy()
+									.copy(pkgdir.to_path_buf())
 							)
 						);
 					};
@@ -47,15 +57,12 @@ impl super::OperationMode {
 						.expect("Could not copy from source")
 				};
 
-				let (post_object, options) = match dest {
-					crate::pref::InstallDestination::ArchLinux { pkgdir, pkgname }
-					=> {
-						let post_object = crate::distro::post_install::archlinux::ArchPost {
-							pkgdir:		pkgdir,
-							pkgname:	pkgname,
-						};
-						(post_object, options)
-					}
+				let (post_object, options) = {
+					let post_object = crate::distro::post_install::archlinux::ArchPost {
+						pkgdir:		pkgdir,
+						pkgname:	pkgname,
+					};
+					(post_object, options)
 				};
 
 				post_install(post_object, options).await;

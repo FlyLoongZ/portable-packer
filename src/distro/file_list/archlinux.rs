@@ -8,7 +8,7 @@ pub mod test;
 */
 pub enum Arch {
 	LocalPackage {
-		pkgname:	String
+		pkgname:	String,
 	},
 }
 
@@ -44,15 +44,6 @@ pub enum ArchError {
 
 impl crate::distro::file_list::GetFileList for Arch {
 	async fn list(&self) -> Result<Vec<super::PackageFile>, Self::ListError> {
-		let pkgdir = match std::env::var("pkgdir") {
-			Ok(v)	=> {
-				std::path::PathBuf::from(v)
-			}
-			Err(_)	=> {
-				return Err(ArchError::MissingPkgdir);
-			}
-		};
-
 		let raw_list = match &self {
 			Arch::LocalPackage { pkgname }	=> {
 				read_files::get(&pkgname)
@@ -86,8 +77,9 @@ impl crate::distro::file_list::GetFileList for Arch {
 				};
 				ret.push(
 					super::PackageFile::Symlink {
-						dest_path:	path,
-						link_target:	link_dest,}
+						source_path:	path.to_path_buf(),
+						link_target:	link_dest,
+					}
 				);
 				continue;
 			}
@@ -106,10 +98,7 @@ impl crate::distro::file_list::GetFileList for Arch {
 
 			ret.push(
 				super::PackageFile::Regular {
-					source_path:	path.to_path_buf(),
-					dest_path:	{
-						pkgdir.join(path)
-					},
+					source_path:	path,
 				}
 			);
 		};
