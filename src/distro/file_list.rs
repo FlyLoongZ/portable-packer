@@ -25,22 +25,15 @@ pub enum PackageFile {
 			source_path describes the current file path on disk.
 		*/
 		source_path:	std::path::PathBuf,
-
-		/**
-			dest_path describes the destination to which the file would be installed.
-
-			The parent path will be automatically created.
-		*/
-		dest_path:	std::path::PathBuf,
 	},
 
 	Symlink {
 		/**
-			dest_path describes the destination to which the link would be installed.
+			source_path describes the destination to which the link exists.
 
 			The parent path will be automatically created.
 		*/
-		dest_path:	std::path::PathBuf,
+		source_path:	std::path::PathBuf,
 
 		/**
 			link_target should be a path describing the link target
@@ -53,23 +46,27 @@ impl PackageFile {
 	/**
 		Install the file or symbolic link into the package directory
 	*/
-	pub async fn copy(self) -> Result<(), std::io::Error> {
+	pub async fn copy(self, pkgdir: std::path::PathBuf) -> Result<(), std::io::Error> {
 		match self {
-			Self::Regular { source_path, dest_path }	=> {
-				println!("Installing {source_path:?} to {dest_path:?}");
+			Self::Regular { source_path }	=> {
+				let install_path = pkgdir.join(&source_path);
+
+				println!("Installing {source_path:?} to {install_path:?}");
 				tokio::fs::copy(
 					source_path,
-					dest_path,
+					install_path,
 				)
 					.await
 					?;
 				Ok(())
 			}
-			Self::Symlink { dest_path, link_target }	=> {
-				println!("Linking {link_target:?} to {dest_path:?}");
+			Self::Symlink { source_path, link_target }	=> {
+				let install_path = pkgdir.join(source_path);
+
+				println!("Linking {install_path:?} to {link_target:?}");
 				tokio::fs::symlink(
 					link_target,
-					dest_path,
+					install_path,
 				)
 					.await
 					?;
