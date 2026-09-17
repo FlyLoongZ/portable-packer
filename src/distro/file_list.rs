@@ -67,6 +67,19 @@ impl PackageFile {
 				};
 
 				println!("Installing {source_path:?} to {install_path:?}");
+
+				match install_path.parent() {
+					Some(v)	=> {
+						tokio::fs::DirBuilder::new()
+							.recursive(true)
+							.mode(0o755)
+							.create(v)
+							.await
+							?;
+					}
+					None	=> {}
+				};
+
 				tokio::fs::copy(
 					source_path,
 					install_path,
@@ -94,6 +107,19 @@ impl PackageFile {
 				};
 
 				println!("Linking {install_path:?} to {link_target:?}");
+
+				match install_path.parent() {
+					Some(v)	=> {
+						tokio::fs::DirBuilder::new()
+							.recursive(true)
+							.mode(0o755)
+							.create(v)
+							.await
+							?;
+					}
+					None	=> {}
+				};
+
 				tokio::fs::symlink(
 					link_target,
 					install_path,
