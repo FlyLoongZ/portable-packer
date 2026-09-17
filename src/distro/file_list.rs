@@ -7,7 +7,8 @@ pub mod symlink_parse;
 	The public trait GetFileList is implemented by multiple backends
 */
 pub trait GetFileList {
-	async fn list(&self) -> Result<Vec<PackageFile>, Self::ListError>;
+	fn list(&self)
+	-> impl std::future::Future<Output = Result<Vec<PackageFile>, Self::ListError>> + Send;
 
 	type ListError;
 }
