@@ -63,6 +63,7 @@ pub async fn get_pref() -> super::OperationMode {
 
 	let mut mode: Option<OpMode> = None;
 	let mut config: Option<super::config::Config> = None;
+	let mut config_fs: Option<super::PortableConfig> = None;
 	let mut distro: Option<(Distro, Distro)> = None;
 	let mut desktop_path: Option<std::path::PathBuf> = None;
 	let mut copy_source: Option<String> = None;
@@ -117,7 +118,11 @@ pub async fn get_pref() -> super::OperationMode {
 			}
 			"--config"		=> {
 				eprintln!("Legacy configuration is deprecated in Portable 14");
+
 				let path: std::path::PathBuf = args.next().expect("Expected path after --config").into();
+				config_fs = Some(
+					super::PortableConfig::Legacy(path.to_path_buf())
+				);
 
 				config = Some(
 					super::config_legacy::get(&path)
@@ -127,6 +132,9 @@ pub async fn get_pref() -> super::OperationMode {
 			}
 			"--config-ng"		=> {
 				let path: std::path::PathBuf = args.next().expect("Expected path after --config-ng").into();
+				config_fs = Some(
+					super::PortableConfig::Modern(path.to_path_buf())
+				);
 
 				config = Some(super::config_toml::get(&path).await)
 			}
@@ -145,6 +153,7 @@ pub async fn get_pref() -> super::OperationMode {
 		config:		{
 			config.expect("Expected a configuration")
 		},
+		config_path:	config_fs.expect("Expected a configuration"),
 		desktop_file:	desktop_path.expect("Expected a desktop file"),
 	};
 

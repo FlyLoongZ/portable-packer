@@ -55,8 +55,25 @@ pub struct RuntimeOptions {
 	*/
 	pub config:		crate::pref::config::Config,
 
+	pub config_path:	PortableConfig,
+
 	/**
 		The path for supplied .desktop file (currently single)
 	*/
 	pub desktop_file:	std::path::PathBuf,
+}
+
+#[derive(Debug)]
+pub enum PortableConfig {
+	Modern(std::path::PathBuf),
+	Legacy(std::path::PathBuf),
+}
+
+impl AsRef<std::path::Path> for PortableConfig {
+	fn as_ref(&self) -> &std::path::Path {
+		match self {
+			Self::Modern(v)	=> v.as_path(),
+			Self::Legacy(v)	=> v.as_path(),
+		}
+	}
 }
