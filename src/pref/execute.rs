@@ -25,7 +25,7 @@ impl super::OperationMode {
 					}
 				};
 
-				let (pkgdir, pkgname ) = match dest {
+				let (pkgdir, pkgname) = match dest {
 					crate::pref::InstallDestination::ArchLinux { pkgdir, pkgname }
 						=> {
 							(
