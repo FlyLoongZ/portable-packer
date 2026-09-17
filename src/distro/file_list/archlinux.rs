@@ -92,11 +92,17 @@ impl crate::distro::file_list::GetFileList for Arch {
 				continue;
 			}
 
-			if ! path.exists() {
-				return Err(
-					ArchError::FileMissing(path)
-				);
-			};
+			match tokio::fs::try_exists(&path).await {
+				Ok(true)	=> {}
+				Ok(false)	=> {
+					return Err(ArchError::FileMissing(path))
+				}
+				Err(e)		=> {
+					return Err(
+						ArchError::IOError(e)
+					)
+				}
+			}
 
 			ret.push(
 				super::PackageFile::Regular {
