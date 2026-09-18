@@ -200,7 +200,7 @@ async fn binary(
 		content.push_str(app_id.as_str());
 		content.push_str("\n");
 
-		content.push_str("exec portable --file-forwarding -- $@");
+		content.push_str("exec portable --file-forwarding -- \"$@\"");
 		content
 	};
 
